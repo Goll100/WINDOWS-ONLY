@@ -3,9 +3,9 @@ using System.Windows;
 
 namespace ScholasticaReader.Views
 {
-    public partial class ParallelReadingWindow : Window
+    public partial class FlashcardWindow : Window
     {
-        public ParallelReadingWindow()
+        public FlashcardWindow()
         {
             try
             {
@@ -13,7 +13,7 @@ namespace ScholasticaReader.Views
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error initializing parallel reading window: {ex.Message}", "Initialization Error");
+                MessageBox.Show($"Error initializing flashcard window: {ex.Message}", "Initialization Error");
             }
         }
     }

@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Windows;
 using Microsoft.Data.Sqlite;
 
 namespace ScholasticaReader.Services
@@ -43,19 +44,26 @@ namespace ScholasticaReader.Services
 
         private void LoadLicenseStatus()
         {
-            using (var connection = new SqliteConnection($"Data Source={dbPath}"))
+            try
             {
-                connection.Open();
-                var command = connection.CreateCommand();
-                command.CommandText = "SELECT ExpiryDate, IsPremium FROM Licenses ORDER BY Id DESC LIMIT 1";
-                using (var reader = command.ExecuteReader())
+                using (var connection = new SqliteConnection($"Data Source={dbPath}"))
                 {
-                    if (reader.Read())
+                    connection.Open();
+                    var command = connection.CreateCommand();
+                    command.CommandText = "SELECT ExpiryDate, IsPremium FROM Licenses ORDER BY Id DESC LIMIT 1";
+                    using (var reader = command.ExecuteReader())
                     {
-                        licenceExpiry = DateTime.Parse(reader.GetString(0));
-                        isPremium = reader.GetInt32(1) == 1;
+                        if (reader.Read())
+                        {
+                            licenceExpiry = DateTime.Parse(reader.GetString(0));
+                            isPremium = reader.GetInt32(1) == 1;
+                        }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error loading license status: {ex.Message}");
             }
         }
 
@@ -93,41 +101,61 @@ namespace ScholasticaReader.Services
         {
             try
             {
+                if (string.IsNullOrEmpty(code))
+                    return false;
+
                 string decrypted = SecurityService.DecryptString(code);
                 var parts = decrypted.Split('|');
-                if (parts.Length != 3) return false;
-                if (parts[0] != hwid) return false;
-                DateTime expiry = DateTime.Parse(parts[1]);
-                if (expiry <= DateTime.Now) return false;
-                // No HWID reuse check – allows weekly renewal with new codes
+                if (parts.Length != 3) 
+                    return false;
+                if (parts[0] != hwid) 
+                    return false;
+                
+                if (!DateTime.TryParse(parts[1], out DateTime expiry))
+                    return false;
+                    
+                if (expiry <= DateTime.Now) 
+                    return false;
+                    
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"Error verifying activation code: {ex.Message}");
                 return false;
             }
         }
 
         private void SaveLicense(string code)
         {
-            string decrypted = SecurityService.DecryptString(code);
-            var parts = decrypted.Split('|');
-            DateTime expiry = DateTime.Parse(parts[1]);
-            bool premium = parts[2] == "Premium";
-
-            using (var connection = new SqliteConnection($"Data Source={dbPath}"))
+            try
             {
-                connection.Open();
-                var cmd = connection.CreateCommand();
-                cmd.CommandText = @"
-                    INSERT INTO Licenses (HWID, ActivationCode, ExpiryDate, IsPremium)
-                    VALUES ($hwid, $code, $expiry, $premium)
-                ";
-                cmd.Parameters.AddWithValue("$hwid", HWIDHelper.GetHWID());
-                cmd.Parameters.AddWithValue("$code", code);
-                cmd.Parameters.AddWithValue("$expiry", expiry.ToString("yyyy-MM-dd HH:mm:ss"));
-                cmd.Parameters.AddWithValue("$premium", premium ? 1 : 0);
-                cmd.ExecuteNonQuery();
+                string decrypted = SecurityService.DecryptString(code);
+                var parts = decrypted.Split('|');
+                
+                if (parts.Length < 2 || !DateTime.TryParse(parts[1], out DateTime expiry))
+                    return;
+                    
+                bool premium = parts.Length > 2 && parts[2] == "Premium";
+
+                using (var connection = new SqliteConnection($"Data Source={dbPath}"))
+                {
+                    connection.Open();
+                    var cmd = connection.CreateCommand();
+                    cmd.CommandText = @"
+                        INSERT INTO Licenses (HWID, ActivationCode, ExpiryDate, IsPremium)
+                        VALUES (@hwid, @code, @expiry, @premium)
+                    ";
+                    cmd.Parameters.AddWithValue("@hwid", HWIDHelper.GetHWID());
+                    cmd.Parameters.AddWithValue("@code", code);
+                    cmd.Parameters.AddWithValue("@expiry", expiry.ToString("yyyy-MM-dd HH:mm:ss"));
+                    cmd.Parameters.AddWithValue("@premium", premium ? 1 : 0);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error saving license: {ex.Message}");
             }
         }
 

@@ -1,3 +1,4 @@
+using System;
 using System.Windows;
 using ScholasticaReader.Services;
 
@@ -7,15 +8,29 @@ namespace ScholasticaReader
     {
         protected override void OnStartup(StartupEventArgs e)
         {
-            base.OnStartup(e);
-            if (!SecurityService.VerifyIntegrity())
+            try
             {
-                MessageBox.Show("Tampering detected. Exiting.");
-                Shutdown();
-                return;
+                base.OnStartup(e);
+                
+                if (!SecurityService.VerifyIntegrity())
+                {
+                    MessageBox.Show("Tampering detected. Exiting application.", "Security Alert");
+                    Shutdown(1);
+                    return;
+                }
+                
+                var license = new LicenseService();
+                if (!license.ValidateLicense())
+                {
+                    MessageBox.Show("License validation failed. Application will exit.", "License Error");
+                    Shutdown(1);
+                }
             }
-            var license = new LicenseService();
-            if (!license.ValidateLicense()) Shutdown();
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error during application startup: {ex.Message}", "Startup Error");
+                Shutdown(1);
+            }
         }
     }
 }
