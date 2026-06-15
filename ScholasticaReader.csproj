@@ -1,21 +1,35 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows</TargetFramework>
-    <Nullable>enable</Nullable>
+    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
     <UseWPF>true</UseWPF>
-    <UseWindowsForms>true</UseWindowsForms>
     <AssemblyName>ScholasticaReader</AssemblyName>
     <RootNamespace>ScholasticaReader</RootNamespace>
+    <ApplicationIcon>Assets/ReaderIcon.ico</ApplicationIcon>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Version>1.0.0</Version>
   </PropertyGroup>
+
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.0" />
-    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2210.55" />
     <PackageReference Include="PdfPig" Version="0.1.8" />
-    <PackageReference Include="VersOne.Epub" Version="3.0.0" />
+    <PackageReference Include="VersOne.Epub" Version="1.5.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="System.Management" Version="8.0.0" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
-    <PackageReference Include="Microsoft.VisualBasic" Version="10.3.0" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2357.6" />
     <PackageReference Include="System.Speech" Version="8.0.0" />
+    <PackageReference Include="System.Security.Cryptography.Xml" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Assets\" />
+    <Folder Include="Models\" />
+    <Folder Include="Services\" />
+    <Folder Include="ViewModels\" />
+    <Folder Include="Views\" />
+    <Folder Include="Database\" />
   </ItemGroup>
 </Project>
