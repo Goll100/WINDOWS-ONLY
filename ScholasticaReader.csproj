@@ -7,9 +7,7 @@
     <UseWindowsForms>true</UseWindowsForms>
     <AssemblyName>ScholasticaReader</AssemblyName>
     <RootNamespace>ScholasticaReader</RootNamespace>
-    <ApplicationIcon>Assets\ReaderIcon.ico</ApplicationIcon>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.0" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2210.55" />
@@ -19,11 +17,5 @@
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
     <PackageReference Include="Microsoft.VisualBasic" Version="10.3.0" />
     <PackageReference Include="System.Speech" Version="8.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="Data\app.db">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 </Project>
