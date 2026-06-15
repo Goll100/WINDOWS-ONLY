@@ -11,11 +11,4 @@
         <wv2:WebView2 x:Name="LeftWebView" Grid.Column="0" Margin="5"/>
         <wv2:WebView2 x:Name="RightWebView" Grid.Column="1" Margin="5"/>
     </Grid>
-</Window>                <Button Content="Highlight" Click="Highlight_Click" Margin="0,5"/>
-                <Button Content="TTS" Click="TTS_Click"/>
-                <Button Content="Flashcards" Click="Flashcards_Click"/>
-                <Button Content="Mind Map" Click="MindMap_Click"/>
-            </StackPanel>
-        </Border>
-    </Grid>
 </Window>
