@@ -11,7 +11,6 @@
             <ColumnDefinition Width="300"/>
         </Grid.ColumnDefinitions>
 
-        <!-- Left Pane: Library -->
         <Border Grid.Column="0" Background="#F5F5F5" BorderBrush="#DDD" BorderThickness="0,0,1,0">
             <StackPanel Margin="10">
                 <TextBlock Text="Library" FontSize="20" FontWeight="Bold" Margin="0,0,0,10"/>
@@ -22,12 +21,10 @@
             </StackPanel>
         </Border>
 
-        <!-- Center Pane: Book View -->
         <Border Grid.Column="1" Background="White">
             <wv2:WebView2 x:Name="BookWebView" />
         </Border>
 
-        <!-- Right Pane: Annotation Panel -->
         <Border Grid.Column="2" Background="#F9F9F9" BorderBrush="#DDD" BorderThickness="1,0,0,0">
             <StackPanel Margin="10">
                 <TextBlock Text="Annotations" FontSize="16" FontWeight="Bold"/>
@@ -35,6 +32,13 @@
                 <TextBox x:Name="NoteTextBox" Height="80" TextWrapping="Wrap" Margin="0,10"/>
                 <Button Content="Add Note" Click="AddNote_Click"/>
                 <Button Content="Highlight" Click="Highlight_Click" Margin="0,5"/>
+                <Button Content="TTS" Click="TTS_Click"/>
+                <Button Content="Flashcards" Click="Flashcards_Click"/>
+                <Button Content="Mind Map" Click="MindMap_Click"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>                <Button Content="Highlight" Click="Highlight_Click" Margin="0,5"/>
                 <Button Content="TTS" Click="TTS_Click"/>
                 <Button Content="Flashcards" Click="Flashcards_Click"/>
                 <Button Content="Mind Map" Click="MindMap_Click"/>
