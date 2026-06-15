@@ -1,7 +1,5 @@
 using System;
 using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
 using System.Windows;
 using Microsoft.Web.WebView2.Wpf;
 using ScholasticaReader.Models;
@@ -12,8 +10,8 @@ namespace ScholasticaReader
 {
     public partial class MainWindow : Window
     {
-        private BookService bookService;
-        private AnnotationService annotationService;
+        private BookService bookService = new BookService();
+        private AnnotationService annotationService = new AnnotationService();
         private LicenseService license;
         private ObservableCollection<Book> library = new ObservableCollection<Book>();
 
@@ -21,29 +19,21 @@ namespace ScholasticaReader
         {
             InitializeComponent();
             license = new LicenseService();
-            bookService = new BookService();
-            annotationService = new AnnotationService();
             LoadLibrary();
             InitializeWebView();
-
-            if (!license.IsPremium)
-            {
-                TeacherDashboardBtn.IsEnabled = false;
-                // Freemium restrictions can be added here
-            }
+            if (!license.IsPremium) TeacherDashboardBtn.IsEnabled = false;
         }
 
         private async void InitializeWebView()
         {
             await BookWebView.EnsureCoreWebView2Async(null);
-            BookWebView.CoreWebView2.NavigateToString("<html><body><h1>Select a book from the library</h1></body></html>");
+            BookWebView.CoreWebView2.NavigateToString("<html><body><h1>Select a book</h1></body></html>");
         }
 
         private void LoadLibrary()
         {
             library.Clear();
-            var books = bookService.GetAllBooks();
-            foreach (var b in books) library.Add(b);
+            foreach (var b in bookService.GetAllBooks()) library.Add(b);
             LibraryListBox.ItemsSource = library;
         }
 
@@ -51,7 +41,6 @@ namespace ScholasticaReader
         {
             var selected = LibraryListBox.SelectedItem as Book;
             if (selected == null) return;
-
             string content = bookService.GetBookContent(selected.FilePath);
             await BookWebView.EnsureCoreWebView2Async(null);
             BookWebView.CoreWebView2.NavigateToString(content);
@@ -61,15 +50,7 @@ namespace ScholasticaReader
         {
             if (LibraryListBox.SelectedItem is Book book && !string.IsNullOrWhiteSpace(NoteTextBox.Text))
             {
-                var ann = new Annotation
-                {
-                    BookId = book.Id,
-                    Type = "Note",
-                    Text = NoteTextBox.Text,
-                    Page = 1,
-                    CreatedAt = DateTime.Now
-                };
-                annotationService.AddAnnotation(ann);
+                annotationService.AddAnnotation(new Annotation { BookId = book.Id, Type = "Note", Text = NoteTextBox.Text, Page = 1, CreatedAt = DateTime.Now });
                 RefreshAnnotations(book.Id);
                 NoteTextBox.Clear();
             }
@@ -79,60 +60,20 @@ namespace ScholasticaReader
         {
             if (LibraryListBox.SelectedItem is Book book)
             {
-                var ann = new Annotation
-                {
-                    BookId = book.Id,
-                    Type = "Highlight",
-                    Text = "User selected highlight",
-                    Page = 1,
-                    CreatedAt = DateTime.Now
-                };
-                annotationService.AddAnnotation(ann);
+                annotationService.AddAnnotation(new Annotation { BookId = book.Id, Type = "Highlight", Text = "Highlight", Page = 1, CreatedAt = DateTime.Now });
                 RefreshAnnotations(book.Id);
             }
         }
 
-        private void RefreshAnnotations(int bookId)
-        {
-            var anns = annotationService.GetAnnotationsForBook(bookId);
-            AnnotationsListBox.ItemsSource = anns;
-        }
-
-        private void TTS_Click(object sender, RoutedEventArgs e)
-        {
-            var synthesizer = new System.Speech.Synthesis.SpeechSynthesizer();
-            synthesizer.SpeakAsync("Text to speech example. You would extract text from the book.");
-        }
-
-        private void Flashcards_Click(object sender, RoutedEventArgs e)
-        {
-            var flashWin = new FlashcardWindow();
-            flashWin.ShowDialog();
-        }
-
-        private void MindMap_Click(object sender, RoutedEventArgs e)
-        {
-            var mindWin = new MindMapWindow();
-            mindWin.ShowDialog();
-        }
-
+        private void RefreshAnnotations(int bookId) => AnnotationsListBox.ItemsSource = annotationService.GetAnnotationsForBook(bookId);
+        private void TTS_Click(object sender, RoutedEventArgs e) => new System.Speech.Synthesis.SpeechSynthesizer().SpeakAsync("Text to speech sample.");
+        private void Flashcards_Click(object sender, RoutedEventArgs e) => new FlashcardWindow().ShowDialog();
+        private void MindMap_Click(object sender, RoutedEventArgs e) => new MindMapWindow().ShowDialog();
         private void TeacherDashboard_Click(object sender, RoutedEventArgs e)
         {
-            if (license.IsPremium)
-            {
-                var dash = new TeacherDashboard();
-                dash.ShowDialog();
-            }
-            else
-            {
-                MessageBox.Show("Teacher Dashboard is a premium feature.");
-            }
+            if (license.IsPremium) new TeacherDashboard().ShowDialog();
+            else MessageBox.Show("Premium feature.");
         }
-
-        private void ParallelReading_Click(object sender, RoutedEventArgs e)
-        {
-            var parallelWin = new ParallelReadingWindow();
-            parallelWin.Show();
-        }
+        private void ParallelReading_Click(object sender, RoutedEventArgs e) => new ParallelReadingWindow().Show();
     }
-} 
+}
