@@ -1,6 +1,7 @@
 <Window x:Class="ScholasticaReader.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
         Title="Scholastica Reader" Height="700" Width="1200"
         WindowStartupLocation="CenterScreen">
     <Grid>
@@ -23,7 +24,7 @@
 
         <!-- Center Pane: Book View -->
         <Border Grid.Column="1" Background="White">
-            <WebView2 x:Name="BookWebView" />
+            <wv2:WebView2 x:Name="BookWebView" />
         </Border>
 
         <!-- Right Pane: Annotation Panel -->
@@ -35,6 +36,12 @@
                 <Button Content="Add Note" Click="AddNote_Click"/>
                 <Button Content="Highlight" Click="Highlight_Click" Margin="0,5"/>
                 <Button Content="TTS" Click="TTS_Click"/>
+                <Button Content="Flashcards" Click="Flashcards_Click"/>
+                <Button Content="Mind Map" Click="MindMap_Click"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>                <Button Content="TTS" Click="TTS_Click"/>
                 <Button Content="Flashcards" Click="Flashcards_Click"/>
                 <Button Content="Mind Map" Click="MindMap_Click"/>
             </StackPanel>
