@@ -35,22 +35,4 @@
             </StackPanel>
         </Border>
     </Grid>
-</Window>                <Button Content="Mind Map" Click="MindMap_Click"/>
-            </StackPanel>
-        </Border>
-    </Grid>
-</Window>                <Button Content="Highlight" Click="Highlight_Click" Margin="0,5"/>
-                <Button Content="TTS" Click="TTS_Click"/>
-                <Button Content="Flashcards" Click="Flashcards_Click"/>
-                <Button Content="Mind Map" Click="MindMap_Click"/>
-            </StackPanel>
-        </Border>
-    </Grid>
-</Window>                <Button Content="Highlight" Click="Highlight_Click" Margin="0,5"/>
-                <Button Content="TTS" Click="TTS_Click"/>
-                <Button Content="Flashcards" Click="Flashcards_Click"/>
-                <Button Content="Mind Map" Click="MindMap_Click"/>
-            </StackPanel>
-        </Border>
-    </Grid>
 </Window>
